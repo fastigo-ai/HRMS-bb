@@ -1,24 +1,16 @@
 import express from "express";
-import * as employeeController from "./employee.controller.js";
-import { uploadDocument } from "../../middlewares/upload.js";
+import { getAllEmployees, getEmployee, addEmployee } from "./employee.controller.js";
+import { protect, restrictTo } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-// Define field configurations for uploads (avatar and resume documents)
-const employeeUploads = uploadDocument.fields([
-  { name: "avatar", maxCount: 1 },
-  { name: "resume", maxCount: 1 },
-]);
+router.use(protect);
 
-router
-  .route("/")
-  .get(employeeController.httpGetAllEmployees)
-  .post(employeeUploads, employeeController.httpCreateEmployee);
+router.route("/")
+  .get(getAllEmployees)
+  .post(restrictTo("hr_admin"), addEmployee);
 
-router
-  .route("/:id")
-  .get(employeeController.httpGetEmployeeById)
-  .patch(employeeUploads, employeeController.httpUpdateEmployee)
-  .delete(employeeController.httpDeleteEmployee);
+router.route("/:id")
+  .get(getEmployee);
 
 export default router;

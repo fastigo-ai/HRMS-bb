@@ -9,12 +9,18 @@ import connectDB from "./src/config/db.js";
 // Middlewares
 import loggerMiddleware from "./src/middlewares/loggerMiddleware.js";
 import errorHandler from "./src/middlewares/errorHandler.js";
+import cookieParser from "cookie-parser";
 
 // Utilities
 import AppError from "./src/utils/AppError.js";
 
 // Routes
+import authRoutes from "./src/modules/auth/auth.route.js";
+import categoryRoutes from "./src/modules/category/category.route.js";
 import employeeRoutes from "./src/modules/employee/employee.route.js";
+import leaveRoutes from "./src/modules/leave/leave.route.js";
+import attendanceRoutes from "./src/modules/attendance/attendance.route.js";
+import swaggerRouter from "./swagger-endpoints.js";
 
 // Handle uncaught exceptions globally before any execution
 process.on("uncaughtException", (err) => {
@@ -31,16 +37,29 @@ const PORT = process.env.PORT || 8000;
 connectDB();
 
 // Global Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(loggerMiddleware);
+
+app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 // Serve Static Uploaded Files
 app.use("/uploads", express.static("uploads"));
 
 // Modular Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/leaves", leaveRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api-docs", swaggerRouter);
 
 // Catch undefined routes and throw AppError
 app.use((req, res, next) => {

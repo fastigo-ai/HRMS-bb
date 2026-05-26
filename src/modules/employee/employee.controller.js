@@ -1,34 +1,11 @@
-import * as employeeService from "./employee.service.js";
+import User from "../auth/user.model.js";
+import AppError from "../../utils/AppError.js";
 import catchAsync from "../../utils/catchAsync.js";
 
-export const httpCreateEmployee = catchAsync(async (req, res) => {
-  const employeeData = { ...req.body };
-
-  // Handle uploaded files if any
-  if (req.files) {
-    if (req.files.avatar) {
-      employeeData.avatar = req.files.avatar[0].path;
-    }
-    if (req.files.resume) {
-      employeeData.resume = req.files.resume[0].path;
-    }
-  } else if (req.file) {
-    // If it's a single upload, map based on the fieldname
-    employeeData[req.file.fieldname] = req.file.path;
-  }
-
-  const employee = await employeeService.createEmployee(employeeData);
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      employee,
-    },
-  });
-});
-
-export const httpGetAllEmployees = catchAsync(async (req, res) => {
-  const employees = await employeeService.getAllEmployees();
+// Retrieve all employees (Staff Directory)
+export const getAllEmployees = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Employees']
+  const employees = await User.find().select("-password");
 
   res.status(200).json({
     status: "success",
@@ -39,36 +16,17 @@ export const httpGetAllEmployees = catchAsync(async (req, res) => {
   });
 });
 
-export const httpGetEmployeeById = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const employee = await employeeService.getEmployeeById(id);
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      employee,
-    },
-  });
-});
-
-export const httpUpdateEmployee = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const updateData = { ...req.body };
-
-  // Handle updated files if any
-  if (req.files) {
-    if (req.files.avatar) {
-      updateData.avatar = req.files.avatar[0].path;
-    }
-    if (req.files.resume) {
-      updateData.resume = req.files.resume[0].path;
-    }
-  } else if (req.file) {
-    updateData[req.file.fieldname] = req.file.path;
+// Retrieve specific employee profile
+export const getEmployee = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Employees']
+  // Allow fetching by database _id or by human-readable empId string (like WS-00101)
+  const query = req.params.id.startsWith("WS-") ? { empId: req.params.id } : { _id: req.params.id };
+  
+  const employee = await User.findOne(query).select("-password");
+  if (!employee) {
+    return next(new AppError("Employee not found!", 404));
   }
 
-  const employee = await employeeService.updateEmployee(id, updateData);
-
   res.status(200).json({
     status: "success",
     data: {
@@ -77,12 +35,37 @@ export const httpUpdateEmployee = catchAsync(async (req, res) => {
   });
 });
 
-export const httpDeleteEmployee = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  await employeeService.deleteEmployee(id);
+// Add new employee (restricted to HR admin)
+export const addEmployee = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Employees']
+  const { name, email, password, role, position, department, phone, address, skills, bankDetails } = req.body;
 
-  res.status(204).json({
+  if (!email || !name) {
+    return next(new AppError("Name and email are required parameters!", 400));
+  }
+
+  // Create employee. Pre-save hooks will generate empId, default department/position, and hash password!
+  const newEmployee = await User.create({
+    name,
+    email,
+    password: password || "password123", // default secure password
+    role,
+    position,
+    department,
+    phone,
+    address,
+    skills,
+    bankDetails,
+  });
+
+  newEmployee.password = undefined;
+
+  res.status(201).json({
     status: "success",
-    data: null,
+    data: {
+      employee: newEmployee,
+    },
   });
 });
+
+export default { getAllEmployees, getEmployee, addEmployee };
