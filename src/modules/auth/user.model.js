@@ -75,12 +75,60 @@ const userSchema = new mongoose.Schema(
       type: bankDetailsSchema,
       default: () => ({}),
     },
+    location: {
+      type: String,
+      default: "HQ Austin"
+    },
+    gender: {
+      type: String,
+      default: "male"
+    },
+    prevCompany: {
+      type: String,
+      default: "N/A"
+    },
+    prevDesignation: {
+      type: String,
+      default: "N/A"
+    },
+    prevDuration: {
+      type: String,
+      default: "N/A"
+    },
+    prevCtc: {
+      type: String,
+      default: "N/A"
+    },
+    prevRelievingDoc: {
+      type: String,
+    },
+    prevSalarySlip: {
+      type: String,
+    },
+    joiningSalary: {
+      type: String,
+      default: "N/A"
+    },
+    aadhaarNumber: {
+      type: String,
+      default: "N/A"
+    },
+    panNumber: {
+      type: String,
+      default: "N/A"
+    },
+    aadhaarCardDoc: {
+      type: String,
+    },
+    panCardDoc: {
+      type: String,
+    },
     passwordChangedAt: Date,
     refreshToken: String,
     leaveBalances: {
-      casualLeave: { type: Number, default: 12 },
-      sickLeave: { type: Number, default: 8 },
-      paidLeave: { type: Number, default: 15 },
+      casualLeave: { type: Number, default: 1 },
+      sickLeave: { type: Number, default: 1 },
+      paidLeave: { type: Number, default: 1 },
     },
   },
   {

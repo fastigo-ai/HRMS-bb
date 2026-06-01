@@ -159,3 +159,20 @@ export const getMyAttendanceLogs = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// Retrieve all attendance logs (restricted to HR admin)
+export const getAllAttendanceLogs = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Attendance']
+  const logs = await Attendance.find()
+    .populate("employee", "name email role empId position department")
+    .sort("-clockIn");
+
+  res.status(200).json({
+    status: "success",
+    results: logs.length,
+    data: {
+      logs,
+    },
+  });
+});
+

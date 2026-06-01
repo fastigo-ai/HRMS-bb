@@ -23,8 +23,9 @@ const storage = new CloudinaryStorage({
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
       // Clean original filename (remove extension and replace special characters)
       const nameWithoutExt = file.originalname.split(".").slice(0, -1).join(".");
+      const ext = file.originalname.split(".").pop() || "bin";
       const sanitizedName = nameWithoutExt.replace(/[^a-zA-Z0-9]/g, "-");
-      return `${file.fieldname}-${sanitizedName}-${uniqueSuffix}`;
+      return `${file.fieldname}-${sanitizedName}-${uniqueSuffix}.${ext}`;
     },
   },
 });

@@ -7,7 +7,7 @@ export const createCategory = catchAsync(async (req, res, next) => {
   // #swagger.tags = ['Categories']
   const { name, description } = req.body;
 
-  if (!name) {
+  if (!name) { 
     return next(new AppError("Category name is required!", 400));
   }
 

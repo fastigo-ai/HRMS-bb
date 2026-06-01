@@ -86,7 +86,7 @@ export const signup = catchAsync(async (req, res, next) => {
 
 // Login Controller
 export const login = catchAsync(async (req, res, next) => {
-  // #swagger.tags = ['Authentication']
+  // #swagger.tags = ['Authenticaion']
   const { email, password } = req.body;
 
   // 1) Check if email and password exist in body

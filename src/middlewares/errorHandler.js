@@ -29,6 +29,10 @@ const handleMulterError = (err) => {
   return new AppError(err.message, 400);
 };
 
+const handleJWTError = () => new AppError("Invalid token. Please log in again!", 401);
+
+const handleJWTExpiredError = () => new AppError("Your token has expired! Please log in again.", 401);
+
 // Error response format for Development
 const sendErrorDev = (err, req, res) => {
   logger.error(`[Dev Error Log] Code: ${err.statusCode || 500} - Message: ${err.message}`, err);
@@ -65,7 +69,14 @@ const errorHandler = (err, req, res, next) => {
   err.status = err.status || "error";
 
   if (process.env.NODE_ENV === "development") {
-    sendErrorDev(err, req, res);
+    let error = Object.assign(Object.create(Object.getPrototypeOf(err)), err);
+    error.message = err.message;
+    error.stack = err.stack;
+
+    if (error.name === "JsonWebTokenError") error = handleJWTError();
+    if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
+
+    sendErrorDev(error, req, res);
   } else {
     let error = Object.assign(Object.create(Object.getPrototypeOf(err)), err);
     error.message = err.message;
@@ -76,6 +87,8 @@ const errorHandler = (err, req, res, next) => {
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === "ValidationError") error = handleValidationErrorDB(error);
     if (error.name === "MulterError") error = handleMulterError(error);
+    if (error.name === "JsonWebTokenError") error = handleJWTError();
+    if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
 
     sendErrorProd(error, req, res);
   }

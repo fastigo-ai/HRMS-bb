@@ -20,7 +20,25 @@ import categoryRoutes from "./src/modules/category/category.route.js";
 import employeeRoutes from "./src/modules/employee/employee.route.js";
 import leaveRoutes from "./src/modules/leave/leave.route.js";
 import attendanceRoutes from "./src/modules/attendance/attendance.route.js";
+import taskRoutes from "./src/modules/task/task.route.js";
+import projectRoutes from "./src/modules/project/project.route.js";
+import timesheetRoutes from "./src/modules/timesheet/timesheet.route.js";
+import notificationRoutes from "./src/modules/notification/notification.route.js";
+import payrollRoutes from "./src/modules/payroll/payroll.route.js";
+import departmentRoutes from "./src/modules/department/department.route.js";
+import salesRoutes from "./src/modules/sales/sales.route.js";
 import swaggerRouter from "./swagger-endpoints.js";
+
+// New modular routes
+import holidayRoutes from "./src/modules/holiday/holiday.route.js";
+import wfhRoutes from "./src/modules/wfh/wfh.route.js";
+import overtimeRoutes from "./src/modules/overtime/overtime.route.js";
+import resignationRoutes from "./src/modules/resignation/resignation.route.js";
+import onboardingRoutes from "./src/modules/onboarding/onboarding.route.js";
+import documentRoutes from "./src/modules/employee/document.route.js";
+import regularizationRoutes from "./src/modules/attendance/regularization.route.js";
+import careerRoutes from "./src/modules/career/career.route.js";
+import announcementRoutes from "./src/modules/announcement/announcement.route.js";
 
 // Handle uncaught exceptions globally before any execution
 process.on("uncaughtException", (err) => {
@@ -57,9 +75,27 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/departments", departmentRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/attendance", attendanceRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/timesheets", timesheetRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/payroll", payrollRoutes);
+app.use("/api/sales", salesRoutes);
 app.use("/api-docs", swaggerRouter);
+
+// New Modular Routes Mount
+app.use("/api/holidays", holidayRoutes);
+app.use("/api/wfh", wfhRoutes);
+app.use("/api/overtime", overtimeRoutes);
+app.use("/api/resignations", resignationRoutes);
+app.use("/api/onboarding", onboardingRoutes);
+app.use("/api/documents", documentRoutes);
+app.use("/api/regularizations", regularizationRoutes);
+app.use("/api/careers", careerRoutes);
+app.use("/api/announcements", announcementRoutes);
 
 // Catch undefined routes and throw AppError
 app.use((req, res, next) => {
