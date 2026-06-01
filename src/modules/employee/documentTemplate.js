@@ -3,7 +3,7 @@ export const OFFER_LETTER_TEMPLATE = `
   <!-- Header Letterhead -->
   <div style="border-bottom: 2px solid #4f46e5; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h1 style="color: #4f46e5; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">WorkSphere Technologies Inc.</h1>
+      <h1 style="color: #4f46e5; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">Fastigo X Technologies Inc.</h1>
       <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b; font-weight: 500;">882 Park Boulevard, Suite 100, San Francisco, CA 94103</p>
     </div>
     <div style="text-align: right;">
@@ -24,7 +24,7 @@ export const OFFER_LETTER_TEMPLATE = `
   <p style="font-size: 14px; color: #334155; margin-bottom: 16px;">Dear {{CANDIDATE_NAME}},</p>
 
   <p style="font-size: 14px; color: #334155; margin-bottom: 16px; text-align: justify;">
-    On behalf of WorkSphere Technologies Inc., we are absolutely thrilled to offer you the position of <strong>{{POSITION}}</strong> within our <strong>{{DEPARTMENT}}</strong> team. We were incredibly impressed by your interviews, credentials, and technical capabilities, and we are confident that you will play a pivotal role in accelerating our engineering excellence.
+    On behalf of Fastigo X Technologies Inc., we are absolutely thrilled to offer you the position of <strong>{{POSITION}}</strong> within our <strong>{{DEPARTMENT}}</strong> team. We were incredibly impressed by your interviews, credentials, and technical capabilities, and we are confident that you will play a pivotal role in accelerating our engineering excellence.
   </p>
 
   <p style="font-size: 14px; color: #334155; margin-bottom: 16px; text-align: justify;">
@@ -66,7 +66,7 @@ export const OFFER_LETTER_TEMPLATE = `
       <div style="font-family: 'Dancing Script', cursive, sans-serif; font-size: 22px; color: #4f46e5; margin: 10px 0;">Sarah Jenkins</div>
       <p style="margin: 0; font-size: 13px; font-weight: 700; color: #334155;">Sarah Jenkins</p>
       <p style="margin: 2px 0 0 0; font-size: 11px; color: #64748b; font-weight: 600;">Director of Human Resources</p>
-      <p style="margin: 0; font-size: 10px; color: #94a3b8;">WorkSphere Technologies Inc.</p>
+      <p style="margin: 0; font-size: 10px; color: #94a3b8;">Fastigo X Technologies Inc.</p>
     </div>
     <div style="text-align: right; width: 220px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 5px;">
       <p style="margin: 0 0 45px 0; font-size: 12px; color: #94a3b8; font-weight: 600;">Candidate Signature & Date</p>
@@ -80,7 +80,7 @@ export const APPOINTMENT_LETTER_TEMPLATE = `
   <!-- Header Letterhead -->
   <div style="border-bottom: 2px solid #0f172a; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h1 style="color: #0f172a; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">WorkSphere Technologies Inc.</h1>
+      <h1 style="color: #0f172a; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">Fastigo X Technologies Inc.</h1>
       <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b; font-weight: 500;">882 Park Boulevard, Suite 100, San Francisco, CA 94103</p>
     </div>
     <div style="text-align: right;">
@@ -101,7 +101,7 @@ export const APPOINTMENT_LETTER_TEMPLATE = `
   <p style="font-size: 14px; color: #334155; margin-bottom: 16px;">Dear {{EMPLOYEE_NAME}},</p>
 
   <p style="font-size: 14px; color: #334155; margin-bottom: 16px; text-align: justify;">
-    We are pleased to formally appoint you as <strong>{{POSITION}}</strong> at WorkSphere Technologies Inc. with effect from your date of joining <strong>{{JOIN_DATE}}</strong>.
+    We are pleased to formally appoint you as <strong>{{POSITION}}</strong> at Fastigo X Technologies Inc. with effect from your date of joining <strong>{{JOIN_DATE}}</strong>.
   </p>
 
   <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 24px; margin-bottom: 10px;">1. Compensation & Remuneration</h3>
@@ -116,7 +116,7 @@ export const APPOINTMENT_LETTER_TEMPLATE = `
 
   <h3 style="font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 20px; margin-bottom: 10px;">3. Code of Conduct & Hours of Work</h3>
   <p style="font-size: 14px; color: #334155; margin: 0 0 24px 0; text-align: justify;">
-    Your standard working hours are 9:00 AM to 6:00 PM, Monday through Friday. You are expected to adhere to all standard rules, safety procedures, and integrity policies enforced at the WorkSphere workplace.
+    Your standard working hours are 9:00 AM to 6:00 PM, Monday through Friday. You are expected to adhere to all standard rules, safety procedures, and integrity policies enforced at the Fastigo X workplace.
   </p>
 
   <p style="font-size: 14px; color: #334155; margin-bottom: 40px;">
@@ -126,7 +126,7 @@ export const APPOINTMENT_LETTER_TEMPLATE = `
   <!-- Signatures -->
   <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px; border-top: 1px solid #f1f5f9; pt-20">
     <div style="text-align: left;">
-      <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #475569;">For WorkSphere Technologies,</p>
+      <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #475569;">For Fastigo X Technologies,</p>
       <div style="font-family: 'Dancing Script', cursive, sans-serif; font-size: 22px; color: #0f172a; margin: 10px 0;">Sarah Jenkins</div>
       <p style="margin: 0; font-size: 13px; font-weight: 700; color: #334155;">Sarah Jenkins</p>
       <p style="margin: 2px 0 0 0; font-size: 11px; color: #64748b; font-weight: 600;">Director of Human Resources</p>
@@ -143,7 +143,7 @@ export const EXPERIENCE_LETTER_TEMPLATE = `
   <!-- Header Letterhead -->
   <div style="border-bottom: 2px solid #059669; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h1 style="color: #059669; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">WorkSphere Technologies Inc.</h1>
+      <h1 style="color: #059669; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">Fastigo X Technologies Inc.</h1>
       <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b; font-weight: 500;">882 Park Boulevard, Suite 100, San Francisco, CA 94103</p>
     </div>
     <div style="text-align: right;">
@@ -163,11 +163,11 @@ export const EXPERIENCE_LETTER_TEMPLATE = `
 
   <!-- Body -->
   <p style="font-size: 14.5px; color: #334155; margin-bottom: 20px; text-align: justify;">
-    This is to certify that <strong>{{EMPLOYEE_NAME}}</strong> was an active employee of WorkSphere Technologies Inc. as a <strong>{{POSITION}}</strong> under the <strong>{{DEPARTMENT}}</strong> division for the period from <strong>{{JOIN_DATE}}</strong> to <strong>{{EXIT_DATE}}</strong>.
+    This is to certify that <strong>{{EMPLOYEE_NAME}}</strong> was an active employee of Fastigo X Technologies Inc. as a <strong>{{POSITION}}</strong> under the <strong>{{DEPARTMENT}}</strong> division for the period from <strong>{{JOIN_DATE}}</strong> to <strong>{{EXIT_DATE}}</strong>.
   </p>
 
   <p style="font-size: 14.5px; color: #334155; margin-bottom: 20px; text-align: justify;">
-    During their tenure at WorkSphere, {{EMPLOYEE_NAME}} demonstrated outstanding diligence, exceptional problem-solving abilities, and a collaborative team spirit. They were instrumental in leading high-impact initiatives and consistently maintained a stellar record of technical contribution and integrity.
+    During their tenure at Fastigo X, {{EMPLOYEE_NAME}} demonstrated outstanding diligence, exceptional problem-solving abilities, and a collaborative team spirit. They were instrumental in leading high-impact initiatives and consistently maintained a stellar record of technical contribution and integrity.
   </p>
 
   <p style="font-size: 14.5px; color: #334155; margin-bottom: 40px; text-align: justify;">
@@ -177,7 +177,7 @@ export const EXPERIENCE_LETTER_TEMPLATE = `
   <!-- Signatures -->
   <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 60px; border-top: 1px solid #f1f5f9; pt-20">
     <div style="text-align: left;">
-      <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #475569;">For WorkSphere Technologies Inc.,</p>
+      <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: 700; color: #475569;">For Fastigo X Technologies Inc.,</p>
       <div style="font-family: 'Dancing Script', cursive, sans-serif; font-size: 22px; color: #059669; margin: 10px 0;">Sarah Jenkins</div>
       <p style="margin: 0; font-size: 13px; font-weight: 700; color: #334155;">Sarah Jenkins</p>
       <p style="margin: 2px 0 0 0; font-size: 11px; color: #64748b; font-weight: 600;">Director of Human Resources</p>

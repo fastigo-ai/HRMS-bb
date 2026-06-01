@@ -16,49 +16,49 @@ dotenv.config();
 const employeesToSeed = [
   {
     name: "Sarah Jenkins",
-    email: "sarah@worksphere.io",
+    email: "sarah@Fastigo X.io",
     role: "hr_admin",
     position: "HR Director",
     department: "People Operations"
   },
   {
     name: "David Miller",
-    email: "david@worksphere.io",
+    email: "david@Fastigo X.io",
     role: "manager",
     position: "Engineering Lead",
     department: "Product Engineering"
   },
   {
     name: "Alex Johnson",
-    email: "alex@worksphere.io",
+    email: "alex@Fastigo X.io",
     role: "standard_employee",
     position: "Senior Frontend Engineer",
     department: "SaaS Development"
   },
   {
     name: "Julian Day",
-    email: "julian@worksphere.io",
+    email: "julian@Fastigo X.io",
     role: "standard_employee",
     position: "Design Director",
     department: "Design & UX"
   },
   {
     name: "Elena Rodriguez",
-    email: "elena@worksphere.io",
+    email: "elena@Fastigo X.io",
     role: "standard_employee",
     position: "VP Growth",
     department: "Marketing"
   },
   {
     name: "Amara Kante",
-    email: "amara@worksphere.io",
+    email: "amara@Fastigo X.io",
     role: "standard_employee",
     position: "Business Development Associate",
     department: "Sales"
   },
   {
     name: "Marcus Vance",
-    email: "marcus@worksphere.io",
+    email: "marcus@Fastigo X.io",
     role: "standard_employee",
     position: "Business Development Manager",
     department: "Sales"
