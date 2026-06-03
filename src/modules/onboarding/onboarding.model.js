@@ -27,14 +27,13 @@ const onboardingSchema = new mongoose.Schema(
 );
 
 // Auto-calculate progress percentage before saving
-onboardingSchema.pre("save", function (next) {
+onboardingSchema.pre("save", function () {
   if (this.tasks.length === 0) {
     this.progress = 0;
-    return next();
+    return;
   }
   const completedTasks = this.tasks.filter((t) => t.completed && t.verifiedByHR).length;
   this.progress = Math.round((completedTasks / this.tasks.length) * 100);
-  next();
 });
 
 const Onboarding = mongoose.model("Onboarding", onboardingSchema);
