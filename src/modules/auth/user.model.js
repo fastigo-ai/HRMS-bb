@@ -123,6 +123,9 @@ const userSchema = new mongoose.Schema(
     panCardDoc: {
       type: String,
     },
+    avatar: {
+      type: String,
+    },
     passwordChangedAt: Date,
     refreshToken: String,
     leaveBalances: {

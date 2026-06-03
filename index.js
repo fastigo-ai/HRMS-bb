@@ -39,6 +39,7 @@ import documentRoutes from "./src/modules/employee/document.route.js";
 import regularizationRoutes from "./src/modules/attendance/regularization.route.js";
 import careerRoutes from "./src/modules/career/career.route.js";
 import announcementRoutes from "./src/modules/announcement/announcement.route.js";
+import candidateRoutes from "./src/modules/candidate/candidate.route.js";
 
 // Handle uncaught exceptions globally before any execution
 process.on("uncaughtException", (err) => {
@@ -96,6 +97,7 @@ app.use("/api/documents", documentRoutes);
 app.use("/api/regularizations", regularizationRoutes);
 app.use("/api/careers", careerRoutes);
 app.use("/api/announcements", announcementRoutes);
+app.use("/api/candidates", candidateRoutes);
 
 // Catch undefined routes and throw AppError
 app.use((req, res, next) => {

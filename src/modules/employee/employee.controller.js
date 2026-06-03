@@ -41,7 +41,7 @@ export const addEmployee = catchAsync(async (req, res, next) => {
   const { 
     name, email, password, role, position, department, phone, address, skills, bankDetails,
     location, gender, prevCompany, prevDesignation, prevDuration, prevCtc, prevRelievingDoc, prevSalarySlip, joiningSalary,
-    aadhaarNumber, panNumber
+    aadhaarNumber, panNumber, avatar
   } = req.body || {};
 
   if (!email || !name) {
@@ -52,6 +52,7 @@ export const addEmployee = catchAsync(async (req, res, next) => {
   let panCardDocPath = undefined;
   let prevRelievingDocPath = undefined;
   let prevSalarySlipPath = undefined;
+  let avatarPath = avatar;
 
   if (req.files) {
     if (req.files.aadhaarCardDoc && req.files.aadhaarCardDoc[0]) {
@@ -65,6 +66,9 @@ export const addEmployee = catchAsync(async (req, res, next) => {
     }
     if (req.files.prevSalarySlip && req.files.prevSalarySlip[0]) {
       prevSalarySlipPath = req.files.prevSalarySlip[0].path;
+    }
+    if (req.files.avatar && req.files.avatar[0]) {
+      avatarPath = req.files.avatar[0].path;
     }
   }
 
@@ -111,6 +115,7 @@ export const addEmployee = catchAsync(async (req, res, next) => {
     panNumber,
     aadhaarCardDoc: aadhaarCardDocPath,
     panCardDoc: panCardDocPath,
+    avatar: avatarPath,
   });
 
   newEmployee.password = undefined;
@@ -129,7 +134,7 @@ export const updateEmployee = catchAsync(async (req, res, next) => {
   const { 
     name, email, password, role, position, department, phone, address, skills, bankDetails,
     location, gender, prevCompany, prevDesignation, prevDuration, prevCtc, prevRelievingDoc, prevSalarySlip, joiningSalary,
-    aadhaarNumber, panNumber
+    aadhaarNumber, panNumber, avatar
   } = req.body || {};
 
   const employee = await User.findById(req.params.id);
@@ -162,6 +167,7 @@ export const updateEmployee = catchAsync(async (req, res, next) => {
   
   if (aadhaarNumber !== undefined) employee.aadhaarNumber = aadhaarNumber;
   if (panNumber !== undefined) employee.panNumber = panNumber;
+  if (avatar !== undefined) employee.avatar = avatar;
 
   if (req.files) {
     if (req.files.aadhaarCardDoc && req.files.aadhaarCardDoc[0]) {
@@ -175,6 +181,9 @@ export const updateEmployee = catchAsync(async (req, res, next) => {
     }
     if (req.files.prevSalarySlip && req.files.prevSalarySlip[0]) {
       employee.prevSalarySlip = req.files.prevSalarySlip[0].path;
+    }
+    if (req.files.avatar && req.files.avatar[0]) {
+      employee.avatar = req.files.avatar[0].path;
     }
   }
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllDepartments, createDepartment, deleteDepartment } from "./department.controller.js";
+import { getAllDepartments, createDepartment, deleteDepartment, updateDepartment } from "./department.controller.js";
 import { protect, restrictTo } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -11,6 +11,7 @@ router.route("/")
   .post(restrictTo("hr_admin"), createDepartment);
 
 router.route("/:id")
+  .patch(restrictTo("hr_admin"), updateDepartment)
   .delete(restrictTo("hr_admin"), deleteDepartment);
 
 export default router;

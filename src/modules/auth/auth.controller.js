@@ -61,6 +61,13 @@ const createSendToken = async (user, statusCode, req, res) => {
     },
   });
 };
+export const signin = catchAsync(async(req, res, next) => {
+  // #swagger.tags = ['Authentication']
+  const {email, password} = req.body || {}
+  if(!email || !password) {
+    return 
+  }
+})
 
 // Signup Controller
 export const signup = catchAsync(async (req, res, next) => {

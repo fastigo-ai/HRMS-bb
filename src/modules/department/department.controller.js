@@ -103,4 +103,40 @@ export const deleteDepartment = catchAsync(async (req, res, next) => {
   });
 });
 
-export default { getAllDepartments, createDepartment, deleteDepartment };
+// Update an existing department
+export const updateDepartment = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Departments']
+  const { name, desc, leader, budget, hiringStatus, efficiency, accentColor, barColor } = req.body;
+  const dept = await Department.findById(req.params.id);
+
+  if (!dept) {
+    return next(new AppError("Department not found!", 404));
+  }
+
+  if (name !== undefined && name !== dept.name) dept.name = name;
+  if (desc !== undefined && desc !== dept.desc) dept.desc = desc;
+  if (budget !== undefined && budget !== dept.budget) dept.budget = budget;
+  if (hiringStatus !== undefined && hiringStatus !== dept.hiringStatus) dept.hiringStatus = hiringStatus;
+  if (efficiency !== undefined && efficiency !== dept.efficiency) dept.efficiency = efficiency;
+  if (accentColor !== undefined && accentColor !== dept.accentColor) dept.accentColor = accentColor;
+  if (barColor !== undefined && barColor !== dept.barColor) dept.barColor = barColor;
+
+  if (leader) {
+    const userQuery = leader.match(/^[0-9a-fA-F]{24}$/) ? { _id: leader } : { name: leader };
+    const leaderUser = await User.findOne(userQuery);
+    if (leaderUser) {
+      dept.leader = leaderUser._id;
+    }
+  }
+
+  await dept.save();
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      department: dept,
+    },
+  });
+});
+
+export default { getAllDepartments, createDepartment, deleteDepartment, updateDepartment };

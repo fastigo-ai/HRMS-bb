@@ -15,7 +15,8 @@ router.route("/")
       { name: "aadhaarCardDoc", maxCount: 1 },
       { name: "panCardDoc", maxCount: 1 },
       { name: "prevRelievingDoc", maxCount: 1 },
-      { name: "prevSalarySlip", maxCount: 1 }
+      { name: "prevSalarySlip", maxCount: 1 },
+      { name: "avatar", maxCount: 1 }
     ]),
     addEmployee
   );
@@ -28,7 +29,8 @@ router.route("/:id")
       { name: "aadhaarCardDoc", maxCount: 1 },
       { name: "panCardDoc", maxCount: 1 },
       { name: "prevRelievingDoc", maxCount: 1 },
-      { name: "prevSalarySlip", maxCount: 1 }
+      { name: "prevSalarySlip", maxCount: 1 },
+      { name: "avatar", maxCount: 1 }
     ]),
     updateEmployee
   )
