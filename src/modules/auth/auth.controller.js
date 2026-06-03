@@ -18,13 +18,16 @@ const signRefreshToken = (id) => {
 };
 
 // Helper to construct token response and store them in secure HTTP-only cookies
-const createSendToken = async (user, statusCode, req, res) => {
+const createSendToken = async (user, statusCode, req, res, keepExistingRefreshToken = false) => {
   const accessToken = signAccessToken(user._id);
-  const refreshToken = signRefreshToken(user._id);
-
-  // Store the refresh token in database on the user object
-  user.refreshToken = refreshToken;
-  await user.save({ validateBeforeSave: false });
+  
+  let refreshToken = user.refreshToken;
+  if (!keepExistingRefreshToken || !refreshToken) {
+    refreshToken = signRefreshToken(user._id);
+    // Store the refresh token in database on the user object
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+  }
 
   // Remove password from output JSON
   user.password = undefined;
@@ -135,8 +138,8 @@ export const refresh = catchAsync(async (req, res, next) => {
     return next(new AppError("User session no longer exists or token was revoked.", 401));
   }
 
-  // 4) Generate new tokens (token rotation) and update cookies/database
-  await createSendToken(currentUser, 200, req, res);
+  // 4) Generate new access token and reuse existing refresh token to avoid rotation sync issues
+  await createSendToken(currentUser, 200, req, res, true);
 });
 
 // Logout Controller

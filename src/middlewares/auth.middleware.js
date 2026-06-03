@@ -37,19 +37,12 @@ export const protect = catchAsync(async (req, res, next) => {
           return next(new AppError("The user session no longer exists. Please log in again.", 401));
         }
 
-        // Generate new tokens
+        // Generate new access token
         const newAccessToken = jwt.sign({ id: currentUser._id }, process.env.JWT_SECRET, {
           expiresIn: process.env.JWT_EXPIRES_IN || "15m",
         });
-        const newRefreshToken = jwt.sign({ id: currentUser._id }, process.env.JWT_REFRESH_SECRET || "refresh-fallback-secret", {
-          expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
-        });
 
-        // Store new refresh token in DB
-        currentUser.refreshToken = newRefreshToken;
-        await currentUser.save({ validateBeforeSave: false });
-
-        // Set cookies
+        // Set accessToken cookie
         const isProduction = process.env.NODE_ENV === "production";
         const cookieOptions = {
           httpOnly: true,
@@ -60,10 +53,6 @@ export const protect = catchAsync(async (req, res, next) => {
         res.cookie("accessToken", newAccessToken, {
           ...cookieOptions,
           expires: new Date(Date.now() + 15 * 60 * 1000)
-        });
-        res.cookie("refreshToken", newRefreshToken, {
-          ...cookieOptions,
-          expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         });
 
         res.setHeader("x-new-access-token", newAccessToken);
