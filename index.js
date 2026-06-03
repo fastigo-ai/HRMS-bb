@@ -68,6 +68,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(loggerMiddleware);
 
 app.get("/favicon.ico", (req, res) => res.status(204).end());
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "Fastigo X HRMS backend server is running successfully.",
+  });
+});
 
 // Serve Static Uploaded Files
 app.use("/uploads", express.static("uploads"));
