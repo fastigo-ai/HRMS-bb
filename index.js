@@ -60,6 +60,7 @@ app.use(
   cors({
     origin: ["http://localhost:5173", "https://admin.fastigo.co"],
     credentials: true,
+    exposedHeaders: ["x-new-access-token"],
   })
 );
 app.use(cookieParser());
