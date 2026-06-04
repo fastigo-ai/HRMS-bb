@@ -37,7 +37,7 @@ const createSendToken = async (user, statusCode, req, res, keepExistingRefreshTo
   
   const accessTokenCookieOptions = {
     expires: new Date(
-      Date.now() + 15 * 60 * 1000 // 15 minutes max age
+      Date.now() + 24 * 60 * 60 * 1000 // 24 hours max age
     ),
     httpOnly: true,
     secure: req.secure || req.headers["x-forwarded-proto"] === "https",
@@ -46,7 +46,7 @@ const createSendToken = async (user, statusCode, req, res, keepExistingRefreshTo
 
   const refreshTokenCookieOptions = {
     expires: new Date(
-      Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days max age
+      Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days max age
     ),
     httpOnly: true,
     secure: req.secure || req.headers["x-forwarded-proto"] === "https",

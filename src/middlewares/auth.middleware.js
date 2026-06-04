@@ -52,7 +52,7 @@ export const protect = catchAsync(async (req, res, next) => {
 
         res.cookie("accessToken", newAccessToken, {
           ...cookieOptions,
-          expires: new Date(Date.now() + 15 * 60 * 1000)
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
         });
 
         res.setHeader("x-new-access-token", newAccessToken);
