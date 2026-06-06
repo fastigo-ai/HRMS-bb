@@ -33,7 +33,7 @@ export const protect = catchAsync(async (req, res, next) => {
         const decodedRefresh = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || "refresh-fallback-secret");
         const currentUser = await User.findById(decodedRefresh.id);
         
-        if (!currentUser || currentUser.refreshToken !== refreshToken) {
+        if (!currentUser) {
           return next(new AppError("The user session no longer exists. Please log in again.", 401));
         }
 

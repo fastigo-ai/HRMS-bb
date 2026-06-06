@@ -1,11 +1,13 @@
 import express from "express";
 import { protect, restrictTo } from "../../middlewares/auth.middleware.js";
+import { uploadDocument } from "../../middlewares/upload.js";
 import {
   createCandidate,
   getCandidates,
   updateCandidateStage,
   deleteCandidate,
   getCandidateMetrics,
+  updateCandidateMetrics,
 } from "./candidate.controller.js";
 
 const router = express.Router();
@@ -15,10 +17,11 @@ router.use(protect);
 
 router.route("/")
   .get(getCandidates)
-  .post(createCandidate);
+  .post(uploadDocument.single("resume"), createCandidate);
 
 router.route("/metrics")
-  .get(getCandidateMetrics);
+  .get(getCandidateMetrics)
+  .patch(updateCandidateMetrics);
 
 router.route("/:id")
   .delete(deleteCandidate);

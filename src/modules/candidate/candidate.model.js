@@ -46,6 +46,10 @@ const candidateSchema = new mongoose.Schema(
     hiredAt: {
       type: Date,
     },
+    resume: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
@@ -53,5 +57,12 @@ const candidateSchema = new mongoose.Schema(
 );
 
 const Candidate = mongoose.model("Candidate", candidateSchema);
+
+const recruitmentSettingSchema = new mongoose.Schema({
+  key: { type: String, unique: true, default: "openPositions" },
+  value: { type: Number, default: 8 }
+});
+
+export const RecruitmentSetting = mongoose.model("RecruitmentSetting", recruitmentSettingSchema);
 
 export default Candidate;

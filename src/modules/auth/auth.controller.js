@@ -132,9 +132,9 @@ export const refresh = catchAsync(async (req, res, next) => {
     return next(new AppError("Invalid or expired refresh token. Please log in again.", 401));
   }
 
-  // 3) Find user in database and check if refresh token matches
+  // 3) Find user in database
   const currentUser = await User.findById(decoded.id);
-  if (!currentUser || currentUser.refreshToken !== refreshToken) {
+  if (!currentUser) {
     return next(new AppError("User session no longer exists or token was revoked.", 401));
   }
 

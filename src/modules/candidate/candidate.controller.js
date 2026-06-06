@@ -1,4 +1,5 @@
-import Candidate from "./candidate.model.js";
+import Candidate, { RecruitmentSetting } from "./candidate.model.js";
+import Department from "../department/department.model.js";
 import catchAsync from "../../utils/catchAsync.js";
 import AppError from "../../utils/AppError.js";
 
@@ -10,12 +11,15 @@ export const createCandidate = catchAsync(async (req, res, next) => {
     return next(new AppError("Name and target role are required properties!", 400));
   }
 
+  const resumeUrl = req.file ? req.file.path : "";
+
   const newCandidate = await Candidate.create({
     name,
     role,
     email,
     source: source || "LinkedIn Outbound",
     notes: notes || "",
+    resume: resumeUrl,
     stage: "Applied",
     stageHistory: [
       {
@@ -101,6 +105,9 @@ export const getCandidateMetrics = catchAsync(async (req, res, next) => {
   const totalCandidates = candidates.length;
   const activeCandidates = candidates.filter(c => c.stage !== "Hired" && c.stage !== "Rejected").length;
 
+  let setting = await RecruitmentSetting.findOne({ key: "openPositions" });
+  const openPositions = setting ? setting.value : 8;
+
   // Calculate Time-to-Hire
   const hiredCandidates = candidates.filter(c => c.stage === "Hired" && c.hiredAt);
   let totalDays = 0;
@@ -146,6 +153,31 @@ export const getCandidateMetrics = catchAsync(async (req, res, next) => {
       activeCandidates,
       avgTimeToHire,
       sourcingChannels,
+      openPositions,
+    },
+  });
+});
+
+// 6. Update Recruitment Metrics / Open Positions
+export const updateCandidateMetrics = catchAsync(async (req, res, next) => {
+  const { openPositions } = req.body;
+  
+  if (openPositions === undefined) {
+    return next(new AppError("openPositions value is required!", 400));
+  }
+
+  let setting = await RecruitmentSetting.findOne({ key: "openPositions" });
+  if (!setting) {
+    setting = await RecruitmentSetting.create({ key: "openPositions", value: openPositions });
+  } else {
+    setting.value = openPositions;
+    await setting.save();
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      openPositions: setting.value,
     },
   });
 });
