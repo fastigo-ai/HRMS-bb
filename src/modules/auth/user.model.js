@@ -20,6 +20,19 @@ const bankDetailsSchema = new mongoose.Schema({
   },
 }, { _id: false });
 
+const customFieldSchema = new mongoose.Schema({
+  key: String,
+  value: Number
+}, { _id: false });
+
+const salaryBreakupSchema = new mongoose.Schema({
+  basic: { type: Number, default: 0 },
+  hra: { type: Number, default: 0 },
+  specialAllowance: { type: Number, default: 0 },
+  pf: { type: Number, default: 0 },
+  customFields: [customFieldSchema]
+}, { _id: false });
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -77,7 +90,7 @@ const userSchema = new mongoose.Schema(
     },
     location: {
       type: String,
-      default: "HQ Austin"
+      default: "India"
     },
     gender: {
       type: String,
@@ -109,6 +122,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "N/A"
     },
+    salaryBreakup: {
+      type: salaryBreakupSchema,
+      default: () => ({ customFields: [] })
+    },
     aadhaarNumber: {
       type: String,
       default: "N/A"
@@ -129,9 +146,9 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: Date,
     refreshToken: String,
     leaveBalances: {
-      casualLeave: { type: Number, default: 1 },
-      sickLeave: { type: Number, default: 1 },
-      paidLeave: { type: Number, default: 1 },
+      casualLeave: { type: Number, default: 2 },
+      sickLeave: { type: Number, default: 2 },
+      paidLeave: { type: Number, default: 2 },
     },
   },
   {
@@ -171,6 +188,7 @@ userSchema.pre("save", async function () {
   }
 });
 
+  
 // Instance method to check if password is correct
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
   return await bcrypt.compare(candidatePassword, userPassword);

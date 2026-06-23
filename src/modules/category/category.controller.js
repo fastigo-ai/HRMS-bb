@@ -21,6 +21,7 @@ export const createCategory = catchAsync(async (req, res, next) => {
   });
 });
 
+
 // Retrieve all categories
 export const getAllCategories = catchAsync(async (req, res, next) => {
   // #swagger.tags = ['Categories']

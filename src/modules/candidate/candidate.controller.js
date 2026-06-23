@@ -2,6 +2,7 @@ import Candidate, { RecruitmentSetting } from "./candidate.model.js";
 import Department from "../department/department.model.js";
 import catchAsync from "../../utils/catchAsync.js";
 import AppError from "../../utils/AppError.js";
+import { sendEmail } from "../../utils/email.js";
 
 // 1. Create Candidate
 export const createCandidate = catchAsync(async (req, res, next) => {
@@ -73,6 +74,17 @@ export const updateCandidateStage = catchAsync(async (req, res, next) => {
 
   if (stage === "Hired") {
     candidate.hiredAt = new Date();
+
+    if (candidate.email) {
+      sendEmail({
+        email: candidate.email,
+        subject: "Congratulations! You have been selected",
+        message: "Congratulations, you have been selected for our company.",
+        html: `<p>Dear <strong>${candidate.name}</strong>,</p><p>Congratulations, you have been selected for our company.</p><p>Best regards,<br/>HR Team</p>`
+      }).catch(err => {
+        console.error(`Failed to send selection email to ${candidate.email}:`, err);
+      });
+    }
   }
 
   await candidate.save();

@@ -3,6 +3,8 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import dotenv from "dotenv";
 import AppError from "../utils/AppError.js";
+import path from "path";
+import fs from "fs";
 
 dotenv.config();
 
@@ -18,7 +20,12 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "hrm-saas-uploads",
-    resource_type: "auto", // Crucial for auto-detecting images vs raw/document files like PDFs and Word Docs
+    resource_type: (req, file) => {
+      if (file.mimetype === "application/pdf" || file.originalname.toLowerCase().endsWith(".pdf")) {
+        return "raw";
+      }
+      return "auto";
+    },
     public_id: (req, file) => {
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
       // Clean original filename (remove extension and replace special characters)
@@ -27,6 +34,25 @@ const storage = new CloudinaryStorage({
       const sanitizedName = nameWithoutExt.replace(/[^a-zA-Z0-9]/g, "-");
       return `${file.fieldname}-${sanitizedName}-${uniqueSuffix}.${ext}`;
     },
+  },
+});
+
+// Local Disk Storage setup for document uploads (bypasses Cloudinary PDF security ACL blocks)
+const localUploadDir = "uploads";
+if (!fs.existsSync(localUploadDir)) {
+  fs.mkdirSync(localUploadDir);
+}
+
+const diskStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, localUploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const nameWithoutExt = file.originalname.split(".").slice(0, -1).join(".");
+    const ext = file.originalname.split(".").pop() || "bin";
+    const sanitizedName = nameWithoutExt.replace(/[^a-zA-Z0-9]/g, "-");
+    cb(null, `${file.fieldname}-${sanitizedName}-${uniqueSuffix}.${ext}`);
   },
 });
 
@@ -69,7 +95,28 @@ export const uploadImage = multer({
 });
 
 export const uploadDocument = multer({
-  storage,
+  storage: diskStorage,
   fileFilter: documentFilter,
   limits: { fileSize: uploadLimit },
 });
+
+// Middleware to format local storage files paths to absolute public URLs
+export const localUrlFormatter = (req, res, next) => {
+  const formatUrl = (file) => {
+    if (file && !file.path.startsWith("http")) {
+      file.path = `${req.protocol}://${req.get("host")}/uploads/${file.filename}`;
+    }
+  };
+
+  if (req.file) {
+    formatUrl(req.file);
+  }
+  if (req.files) {
+    Object.keys(req.files).forEach(key => {
+      if (Array.isArray(req.files[key])) {
+        req.files[key].forEach(file => formatUrl(file));
+      }
+    });
+  }
+  next();
+};

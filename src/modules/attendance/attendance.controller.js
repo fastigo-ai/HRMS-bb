@@ -1,4 +1,5 @@
 import Attendance from "./attendance.model.js";
+import Company from "../company/company.model.js";
 import AppError from "../../utils/AppError.js";
 import catchAsync from "../../utils/catchAsync.js";
 
@@ -23,13 +24,57 @@ export const clockIn = catchAsync(async (req, res, next) => {
     return next(new AppError("You have already clocked in today!", 400));
   }
 
+  // Geofence check if mode is Office
+  const company = await Company.findOne();
+  if (mode === "Office" && company) {
+    const { latitude, longitude } = req.body;
+    if (latitude === undefined || longitude === undefined) {
+      return next(new AppError("GPS coordinates are required to clock in from the office!", 400));
+    }
+
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+      const R = 6371e3; // Earth radius in meters
+      const phi1 = (lat1 * Math.PI) / 180;
+      const phi2 = (lat2 * Math.PI) / 180;
+      const deltaPhi = ((lat2 - lat1) * Math.PI) / 180;
+      const deltaLambda = ((lon2 - lon1) * Math.PI) / 180;
+
+      const a =
+        Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+        Math.cos(phi1) * Math.cos(phi2) *
+        Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return R * c; // Distance in meters
+    };
+
+    
+    const distance = calculateDistance(
+      Number(latitude),
+      Number(longitude),
+      company.latitude,
+      company.longitude
+    );
+
+    if (distance > company.radius) {
+      return next(
+        new AppError(
+          `Clock-in blocked! You are outside the authorized office boundary (${Math.round(distance)}m away from office).`,
+          400
+        )
+      );
+    }
+  }
+
   // Calculate lateness threshold (e.g. 9:30 AM shift starts)
   const hour = now.getHours();
   const minute = now.getMinutes();
   let isLate = false;
   let status = "Present";
 
-  if (hour > 9 || (hour === 9 && minute > 30)) {
+  if (mode === "WFH") {
+    status = "WFH";
+  } else if (hour > 9 || (hour === 9 && minute > 30)) {
     isLate = true;
     status = "Late";
   }

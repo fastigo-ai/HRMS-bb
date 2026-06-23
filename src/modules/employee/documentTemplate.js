@@ -18,7 +18,7 @@ export const OFFER_LETTER_TEMPLATE = `
     <p style="margin: 0 0 10px 0; font-size: 14px; color: #475569;">Email: {{CANDIDATE_EMAIL}}</p>
   </div>
 
-  <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 0; border-left: 4px solid #4f46e5; padding-left: 12px; margin-bottom: 20px;">Subject: Offer of Employment - {{POSITION}}</h2>
+  <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 0; border-left: 4px solid #4f46e5; padding-left: 12px; margin-bottom: 20px;">- {{POSITION}}</h2>
 
   <!-- Body -->
   <p style="font-size: 14px; color: #334155; margin-bottom: 16px;">Dear {{CANDIDATE_NAME}},</p>

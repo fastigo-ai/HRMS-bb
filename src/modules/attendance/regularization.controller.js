@@ -57,6 +57,10 @@ export const getMyRegularizations = catchAsync(async (req, res, next) => {
   });
 });
 
+export const updateRegularization = catchAsync(async(req, res, next) => {
+  const {id} = req.params;
+})
+
 export const getAllRegularizations = catchAsync(async (req, res, next) => {
   const requests = await Regularization.find()
     .populate("employee", "name position department empId")

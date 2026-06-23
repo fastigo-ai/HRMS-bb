@@ -15,6 +15,13 @@ const payslipSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Please provide the base salary amount!"],
     },
+    basic: { type: Number, default: 0 },
+    hra: { type: Number, default: 0 },
+    specialAllowance: { type: Number, default: 0 },
+    providentFund: { type: Number, default: 0 },
+    customEarnings: [{ label: String, amount: Number }],
+    customDeductions: [{ label: String, amount: Number }],
+    incomeTax: { type: Number, default: 0 },
     taxWithheld: {
       type: Number,
       required: [true, "Please provide the tax withheld amount!"],
@@ -27,6 +34,22 @@ const payslipSchema = new mongoose.Schema(
       type: String,
       enum: ["Pending", "Disbursed"],
       default: "Disbursed",
+    },
+    totalLeaves: {
+      type: Number,
+      default: 0,
+    },
+    extraLeaves: {
+      type: Number,
+      default: 0,
+    },
+    deductionAmount: {
+      type: Number,
+      default: 0,
+    },
+    finalSalary: {
+      type: Number,
+      default: 0,
     },
   },
   {

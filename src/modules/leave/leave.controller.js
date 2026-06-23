@@ -1,5 +1,6 @@
 import Leave from "./leave.model.js";
 import User from "../auth/user.model.js";
+import Attendance from "../attendance/attendance.model.js";
 import AppError from "../../utils/AppError.js";
 import catchAsync from "../../utils/catchAsync.js";
 
@@ -124,6 +125,40 @@ export const resolveLeave = catchAsync(async (req, res, next) => {
         employee.leaveBalances[balanceKey] += leave.totalDays;
         await employee.save({ validateBeforeSave: false });
       }
+    }
+  }
+
+  // Create attendance logs with status "Leave" if Approved
+  if (status === "Approved") {
+    const start = new Date(leave.startDate);
+    const end = new Date(leave.endDate);
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dayOfWeek = d.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) continue; // Skip weekends
+      
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const dateStr = `${year}-${month}-${day}`;
+      
+      const clockInDate = new Date(d);
+      clockInDate.setHours(9, 0, 0, 0);
+      const clockOutDate = new Date(d);
+      clockOutDate.setHours(18, 0, 0, 0);
+
+      await Attendance.findOneAndUpdate(
+        { employee: leave.employee, date: dateStr },
+        {
+          clockIn: clockInDate,
+          clockOut: clockOutDate,
+          status: "Leave",
+          mode: "Office",
+          isLate: false,
+          timeSpent: "9h 0m",
+          location: "On Leave",
+        },
+        { upsert: true, new: true }
+      );
     }
   }
 

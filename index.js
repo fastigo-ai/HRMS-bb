@@ -40,6 +40,9 @@ import regularizationRoutes from "./src/modules/attendance/regularization.route.
 import careerRoutes from "./src/modules/career/career.route.js";
 import announcementRoutes from "./src/modules/announcement/announcement.route.js";
 import candidateRoutes from "./src/modules/candidate/candidate.route.js";
+import companyRoutes from "./src/modules/company/company.route.js";
+import recruitmentRoutes from "./src/modules/recruitment/recruitment.route.js";
+import omnidimensionRoutes from "./src/modules/webhooks/omnidimension.route.js";
 
 // Handle uncaught exceptions globally before any execution
 process.on("uncaughtException", (err) => {
@@ -105,6 +108,9 @@ app.use("/api/regularizations", regularizationRoutes);
 app.use("/api/careers", careerRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/candidates", candidateRoutes);
+app.use("/api/company", companyRoutes);
+app.use("/api/ats", recruitmentRoutes);
+app.use("/api/webhooks/omnidimension", omnidimensionRoutes);
 
 // Catch undefined routes and throw AppError
 app.use((req, res, next) => {

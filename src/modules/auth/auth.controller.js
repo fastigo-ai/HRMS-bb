@@ -111,7 +111,7 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError("Incorrect email or password!", 401));
   }
 
-  // 3) If everything is okay, send token back to client
+  // 3) If everything is okay, send token back to client.                                                 
   await createSendToken(user, 200, req, res);
 });
 
@@ -141,6 +141,8 @@ export const refresh = catchAsync(async (req, res, next) => {
   // 4) Generate new access token and reuse existing refresh token to avoid rotation sync issues
   await createSendToken(currentUser, 200, req, res, true);
 });
+
+
 
 // Logout Controller
 export const logout = catchAsync(async (req, res, next) => {
@@ -216,4 +218,32 @@ export const updateProfile = catchAsync(async (req, res, next) => {
   });
 });
 
-export default { signup, login, refresh, logout, getProfile, updateProfile };
+// Update Password Controller
+export const updatePassword = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Authentication']
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return next(new AppError("Please provide both current and new password.", 400));
+  }
+
+  // 1) Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2) Check if current password is correct
+  if (!(await user.correctPassword(currentPassword, user.password))) {
+    return next(new AppError('Your current password is wrong', 401));
+  }
+
+  // 3) If correct, update password
+  user.password = newPassword;
+  await user.save();
+
+  // 4) Send response
+  res.status(200).json({
+    status: "success",
+    message: "Password successfully updated",
+  });
+});
+
+export default { signup, login, refresh, logout, getProfile, updateProfile, updatePassword };

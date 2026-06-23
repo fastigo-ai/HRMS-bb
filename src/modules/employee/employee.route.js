@@ -1,7 +1,7 @@
 import express from "express";
 import { getAllEmployees, getEmployee, addEmployee, updateEmployee, deleteEmployee } from "./employee.controller.js";
 import { protect, restrictTo } from "../../middlewares/auth.middleware.js";
-import { uploadDocument } from "../../middlewares/upload.js";
+import { uploadDocument, localUrlFormatter } from "../../middlewares/upload.js";
 
 const router = express.Router();
 
@@ -18,6 +18,7 @@ router.route("/")
       { name: "prevSalarySlip", maxCount: 1 },
       { name: "avatar", maxCount: 1 }
     ]),
+    localUrlFormatter,
     addEmployee
   );
 
@@ -32,6 +33,7 @@ router.route("/:id")
       { name: "prevSalarySlip", maxCount: 1 },
       { name: "avatar", maxCount: 1 }
     ]),
+    localUrlFormatter,
     updateEmployee
   )
   .delete(restrictTo("hr_admin"), deleteEmployee);

@@ -22,7 +22,7 @@
       "get": {
         "description": "",
         "responses": {
-          "204": {
+           "204": {
             "description": "No Content"
           }
         }

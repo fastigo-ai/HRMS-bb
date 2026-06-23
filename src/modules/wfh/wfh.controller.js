@@ -1,4 +1,5 @@
 import WFH from "./wfh.model.js";
+import Attendance from "../attendance/attendance.model.js";
 import catchAsync from "../../utils/catchAsync.js";
 import AppError from "../../utils/AppError.js";
 
@@ -65,6 +66,41 @@ export const resolveWFHRequest = catchAsync(async (req, res, next) => {
 
   wfh.status = status;
   wfh.approvedBy = req.user.name || req.user.role;
+
+  // Create attendance logs with status "WFH" if Approved
+  if (status === "Approved") {
+    const start = new Date(wfh.startDate);
+    const end = new Date(wfh.endDate);
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dayOfWeek = d.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) continue; // Skip weekends
+      
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const dateStr = `${year}-${month}-${day}`;
+      
+      const clockInDate = new Date(d);
+      clockInDate.setHours(9, 0, 0, 0);
+      const clockOutDate = new Date(d);
+      clockOutDate.setHours(18, 0, 0, 0);
+
+      await Attendance.findOneAndUpdate(
+        { employee: wfh.employee, date: dateStr },
+        {
+          clockIn: clockInDate,
+          clockOut: clockOutDate,
+          status: "WFH",
+          mode: "WFH",
+          isLate: false,
+          timeSpent: "9h 0m",
+          location: "Remote",
+        },
+        { upsert: true, new: true }
+      );
+    }
+  }
+
   await wfh.save();
 
   res.status(200).json({

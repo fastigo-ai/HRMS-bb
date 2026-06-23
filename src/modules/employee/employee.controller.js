@@ -41,7 +41,7 @@ export const addEmployee = catchAsync(async (req, res, next) => {
   const { 
     name, email, password, role, position, department, phone, address, skills, bankDetails,
     location, gender, prevCompany, prevDesignation, prevDuration, prevCtc, prevRelievingDoc, prevSalarySlip, joiningSalary,
-    aadhaarNumber, panNumber, avatar
+    aadhaarNumber, panNumber, avatar, salaryBreakup
   } = req.body || {};
 
   if (!email || !name) {
@@ -90,6 +90,19 @@ export const addEmployee = catchAsync(async (req, res, next) => {
     }
   }
 
+  let parsedSalaryBreakup = undefined;
+  if (salaryBreakup !== undefined) {
+    if (typeof salaryBreakup === "string") {
+      try {
+        parsedSalaryBreakup = JSON.parse(salaryBreakup);
+      } catch (e) {
+        // ignore
+      }
+    } else {
+      parsedSalaryBreakup = salaryBreakup;
+    }
+  }
+
   // Create employee. Pre-save hooks will generate empId, default department/position, and hash password!
   const newEmployee = await User.create({
     name,
@@ -116,6 +129,7 @@ export const addEmployee = catchAsync(async (req, res, next) => {
     aadhaarCardDoc: aadhaarCardDocPath,
     panCardDoc: panCardDocPath,
     avatar: avatarPath,
+    salaryBreakup: parsedSalaryBreakup,
   });
 
   newEmployee.password = undefined;
@@ -134,7 +148,7 @@ export const updateEmployee = catchAsync(async (req, res, next) => {
   const { 
     name, email, password, role, position, department, phone, address, skills, bankDetails,
     location, gender, prevCompany, prevDesignation, prevDuration, prevCtc, prevRelievingDoc, prevSalarySlip, joiningSalary,
-    aadhaarNumber, panNumber, avatar
+    aadhaarNumber, panNumber, avatar, salaryBreakup
   } = req.body || {};
 
   const employee = await User.findById(req.params.id);
@@ -168,6 +182,16 @@ export const updateEmployee = catchAsync(async (req, res, next) => {
   if (aadhaarNumber !== undefined) employee.aadhaarNumber = aadhaarNumber;
   if (panNumber !== undefined) employee.panNumber = panNumber;
   if (avatar !== undefined) employee.avatar = avatar;
+
+  if (salaryBreakup !== undefined) {
+    if (typeof salaryBreakup === "string") {
+      try {
+        employee.salaryBreakup = JSON.parse(salaryBreakup);
+      } catch (e) {}
+    } else {
+      employee.salaryBreakup = salaryBreakup;
+    }
+  }
 
   if (req.files) {
     if (req.files.aadhaarCardDoc && req.files.aadhaarCardDoc[0]) {

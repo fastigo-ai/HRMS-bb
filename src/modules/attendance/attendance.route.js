@@ -1,6 +1,6 @@
 import express from "express";
 import { clockIn, clockOut, getTodayAttendance, getMyAttendanceLogs, getAllAttendanceLogs } from "./attendance.controller.js";
-import { protect } from "../../middlewares/auth.middleware.js";
+import { protect, restrictTo } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -11,6 +11,6 @@ router.post("/clock-in", clockIn);
 router.post("/clock-out", clockOut);
 router.get("/today", getTodayAttendance);
 router.get("/my", getMyAttendanceLogs);
-router.get("/", getAllAttendanceLogs);
+router.get("/", restrictTo("hr_admin"), getAllAttendanceLogs);
 
 export default router;

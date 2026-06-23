@@ -1,5 +1,5 @@
 import express from "express";
-import { signup, login, refresh, logout, getProfile, updateProfile } from "./auth.controller.js";
+import { signup, login, refresh, logout, getProfile, updateProfile, updatePassword } from "./auth.controller.js";
 import { protect } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -15,5 +15,7 @@ router.use(protect);
 router.route("/profile")
   .get(getProfile)
   .patch(updateProfile);
+
+router.patch("/password", updatePassword);
 
 export default router;

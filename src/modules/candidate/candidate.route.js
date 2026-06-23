@@ -1,6 +1,6 @@
 import express from "express";
 import { protect, restrictTo } from "../../middlewares/auth.middleware.js";
-import { uploadDocument } from "../../middlewares/upload.js";
+import { uploadDocument, localUrlFormatter } from "../../middlewares/upload.js";
 import {
   createCandidate,
   getCandidates,
@@ -17,7 +17,7 @@ router.use(protect);
 
 router.route("/")
   .get(getCandidates)
-  .post(uploadDocument.single("resume"), createCandidate);
+  .post(uploadDocument.single("resume"), localUrlFormatter, createCandidate);
 
 router.route("/metrics")
   .get(getCandidateMetrics)
