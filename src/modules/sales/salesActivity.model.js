@@ -40,6 +40,11 @@ const salesActivitySchema = new mongoose.Schema(
       ref: "User",
       required: [true, "An activity must be logged by an active employee rep!"],
     },
+    mom: {
+      attendees: { type: String, default: "" },
+      pointsDiscussed: { type: String, default: "" },
+      actionItems: { type: String, default: "" }
+    }
   },
   {
     timestamps: true,

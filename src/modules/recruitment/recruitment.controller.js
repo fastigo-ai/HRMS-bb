@@ -241,7 +241,6 @@ export const triggerAiMatch = catchAsync(async (req, res, next) => {
   }
 });
 
-
 // Interviews CRUD
 export const scheduleInterview = catchAsync(async (req, res, next) => {
   const interview = await Interview.create(req.body);

@@ -1,4 +1,5 @@
 import express from "express";
+import { Server } from "socket.io";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -122,6 +123,26 @@ app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
   logger.info(`HRM Server initialized and listening on port ${PORT}`);
+});
+
+// Initialize WebSockets
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173", "https://admin.fastigo.co"],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Make io accessible globally via req.app.get('io')
+app.set("io", io);
+
+io.on("connection", (socket) => {
+  logger.info(`New client connected via WebSockets: ${socket.id}`);
+  
+  socket.on("disconnect", () => {
+    logger.info(`Client disconnected: ${socket.id}`);
+  });
 });
 
 // Handle unhandled promise rejections globally

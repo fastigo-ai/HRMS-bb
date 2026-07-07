@@ -25,6 +25,18 @@ const leadSchema = new mongoose.Schema(
       type: String,
       default: "LinkedIn Outbound",
     },
+    industry: {
+      type: String,
+      trim: true,
+    },
+    budget: {
+      type: String,
+      trim: true,
+    },
+    address: {
+      type: String,
+      trim: true,
+    },
     status: {
       type: String,
       enum: ["Lead", "Contacted", "Qualified", "Meeting Scheduled", "Negotiation", "Closed Won", "Closed Lost"],

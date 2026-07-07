@@ -29,10 +29,14 @@ export const getLeads = catchAsync(async (req, res, next) => {
 // 2. Register Prospect/Lead
 export const createLead = catchAsync(async (req, res, next) => {
   // #swagger.tags = ['Sales']
-  const { name, company, phone, email, source, status, priority, next_followup, notes } = req.body;
+  const { name, company, phone, email, source, industry, budget, address, status, priority, next_followup, notes } = req.body;
 
   if (!name || !company) {
     return next(new AppError("Name and company are required properties for a lead!", 400));
+  }
+
+  if (!phone && !email) {
+    return next(new AppError("At least one contact method (phone or email) is required!", 400));
   }
 
   const newLead = await Lead.create({
@@ -41,6 +45,9 @@ export const createLead = catchAsync(async (req, res, next) => {
     phone,
     email,
     source,
+    industry,
+    budget,
+    address,
     status: status || "Lead",
     priority: priority || "Medium",
     next_followup,
@@ -61,6 +68,11 @@ export const createLead = catchAsync(async (req, res, next) => {
     createdBy: req.user.id,
   });
 
+  const io = req.app.get("io");
+  if (io) {
+    io.emit("lead_created", newLead);
+  }
+
   res.status(201).json({
     status: "success",
     data: {
@@ -80,6 +92,30 @@ export const updateLeadStatus = catchAsync(async (req, res, next) => {
   }
 
   const oldStatus = lead.status;
+
+  if (oldStatus === status) {
+    return res.status(200).json({ status: "success", data: { lead } });
+  }
+
+  const closedStates = ["Closed Won", "Closed Lost"];
+  if (closedStates.includes(oldStatus)) {
+    return next(new AppError(`Cannot change status of a closed lead (${oldStatus}).`, 400));
+  }
+
+  const pipelineOrder = ["Lead", "Contacted", "Qualified", "Meeting Scheduled", "Negotiation", "Closed Won", "Closed Lost"];
+  
+  const oldIndex = pipelineOrder.indexOf(oldStatus);
+  const newIndex = pipelineOrder.indexOf(status);
+
+  if (newIndex === -1) {
+    return next(new AppError(`Invalid pipeline status: ${status}`, 400));
+  }
+
+  // Prevent moving backward in the pipeline unless it's moving to Closed Lost
+  if (newIndex < oldIndex && status !== "Closed Lost") {
+    return next(new AppError(`Invalid transition: Cannot move lead backwards from ${oldStatus} to ${status}.`, 400));
+  }
+
   lead.status = status;
   await lead.save();
 
@@ -96,11 +132,79 @@ export const updateLeadStatus = catchAsync(async (req, res, next) => {
     createdBy: req.user.id,
   });
 
+  const io = req.app.get("io");
+  if (io) {
+    io.emit("lead_updated", lead);
+  }
+
   res.status(200).json({
     status: "success",
     data: {
       lead,
     },
+  });
+});
+
+export const updateLead = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Sales']
+  const lead = await Lead.findById(req.params.id);
+  
+  if (!lead) {
+    return next(new AppError("Lead not found!", 404));
+  }
+
+  const { name, company, phone, email, source, industry, budget, address, priority, next_followup, notes, status } = req.body;
+
+  lead.name = name || lead.name;
+  lead.company = company || lead.company;
+  lead.phone = phone || lead.phone;
+  lead.email = email || lead.email;
+  lead.source = source || lead.source;
+  lead.industry = industry || lead.industry;
+  lead.budget = budget || lead.budget;
+  lead.address = address || lead.address;
+  lead.priority = priority || lead.priority;
+  lead.next_followup = next_followup !== undefined ? next_followup : lead.next_followup;
+  lead.notes = notes !== undefined ? notes : lead.notes;
+  
+  if (status) {
+    lead.status = status;
+  }
+
+  await lead.save();
+
+  const io = req.app.get("io");
+  if (io) {
+    io.emit("lead_updated", lead);
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      lead,
+    },
+  });
+});
+
+export const deleteLead = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Sales']
+  const lead = await Lead.findByIdAndDelete(req.params.id);
+  
+  if (!lead) {
+    return next(new AppError("Lead not found!", 404));
+  }
+
+  // Delete associated activities as well
+  await SalesActivity.deleteMany({ lead: lead._id });
+
+  const io = req.app.get("io");
+  if (io) {
+    io.emit("lead_updated"); // triggers refresh
+  }
+
+  res.status(204).json({
+    status: "success",
+    data: null,
   });
 });
 
@@ -128,7 +232,7 @@ export const getActivities = catchAsync(async (req, res, next) => {
 // 5. Create Activity
 export const createActivity = catchAsync(async (req, res, next) => {
   // #swagger.tags = ['Sales']
-  const { leadId, leadName, company, type, description, duration, outcome, verified } = req.body;
+  const { leadId, leadName, company, type, description, duration, outcome, verified, mom } = req.body;
 
   const newActivity = await SalesActivity.create({
     lead: leadId || null,
@@ -140,7 +244,13 @@ export const createActivity = catchAsync(async (req, res, next) => {
     outcome: outcome || "",
     verified: verified !== undefined ? verified : true,
     createdBy: req.user.id,
+    mom: mom || {}
   });
+
+  const io = req.app.get("io");
+  if (io) {
+    io.emit("activity_added", newActivity);
+  }
 
   res.status(201).json({
     status: "success",
@@ -250,7 +360,7 @@ export const updateSalesRole = catchAsync(async (req, res, next) => {
     return next(new AppError("You are not authorized to change a staff member's position!", 403));
   }
 
-  const { position } = req.body;
+  const { position } = req.body; 
   if (!["Business Development Associate", "Business Development Manager"].includes(position)) {
     return next(new AppError("Invalid sales position! Must be Business Development Associate or Business Development Manager.", 400));
   }

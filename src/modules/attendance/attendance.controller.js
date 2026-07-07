@@ -66,7 +66,7 @@ export const clockIn = catchAsync(async (req, res, next) => {
     }
   }
 
-  // Calculate lateness threshold (e.g. 9:30 AM shift starts)
+// Calculate lateness threshold (e.g. 9:30 AM shift starts)
   const hour = now.getHours();
   const minute = now.getMinutes();
   let isLate = false;
