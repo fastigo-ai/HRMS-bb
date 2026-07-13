@@ -226,3 +226,43 @@ export const disbursePayslip = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// Update a payslip (restricted to HR admin)
+export const updatePayslip = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Payroll']
+  const payslip = await Payslip.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!payslip) {
+    return next(new AppError("No payslip found with that ID", 404));
+  }
+
+  const populated = await Payslip.findById(payslip._id).populate(
+    "employee",
+    "name email role empId position department bankDetails"
+  );
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      payslip: populated,
+    },
+  });
+});
+
+// Delete a payslip (restricted to HR admin)
+export const deletePayslip = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Payroll']
+  const payslip = await Payslip.findByIdAndDelete(req.params.id);
+
+  if (!payslip) {
+    return next(new AppError("No payslip found with that ID", 404));
+  }
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});

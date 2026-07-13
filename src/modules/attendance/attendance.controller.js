@@ -221,3 +221,78 @@ export const getAllAttendanceLogs = catchAsync(async (req, res, next) => {
   });
 });
 
+// Create Attendance (restricted to HR admin)
+export const createAttendance = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Attendance']
+  const newRecord = await Attendance.create(req.body);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      attendance: newRecord,
+    },
+  });
+});
+
+// Get Attendance by ID (restricted to HR admin)
+export const getAttendanceById = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Attendance']
+  const record = await Attendance.findById(req.params.id).populate("employee", "name email role empId position department");
+
+  if (!record) {
+    return next(new AppError("No attendance record found with that ID", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      attendance: record,
+    },
+  });
+});
+
+// Update Attendance (restricted to HR admin)
+export const updateAttendance = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Attendance']
+  const record = await Attendance.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!record) {
+    return next(new AppError("No attendance record found with that ID", 404));
+  }
+
+  // Recalculate timeSpent if clockIn and clockOut are available/modified
+  if (record.clockIn && record.clockOut) {
+    const diffMs = new Date(record.clockOut) - new Date(record.clockIn);
+    if (diffMs >= 0) {
+      const diffHrs = Math.floor(diffMs / 3600000);
+      const diffMins = Math.floor((diffMs % 3600000) / 60000);
+      record.timeSpent = `${diffHrs}h ${diffMins}m`;
+      await record.save();
+    }
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      attendance: record,
+    },
+  });
+});
+
+// Delete Attendance (restricted to HR admin)
+export const deleteAttendance = catchAsync(async (req, res, next) => {
+  // #swagger.tags = ['Attendance']
+  const record = await Attendance.findByIdAndDelete(req.params.id);
+
+  if (!record) {
+    return next(new AppError("No attendance record found with that ID", 404));
+  }
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});
