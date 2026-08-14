@@ -29,7 +29,7 @@ export const getLeads = catchAsync(async (req, res, next) => {
 // 2. Register Prospect/Lead
 export const createLead = catchAsync(async (req, res, next) => {
   // #swagger.tags = ['Sales']
-  const { name, company, phone, email, source, industry, budget, address, status, priority, next_followup, notes } = req.body;
+  const { name, company, phone, email, source, industry, budget, amount, address, status, priority, next_followup, notes } = req.body;
 
   if (!name || !company) {
     return next(new AppError("Name and company are required properties for a lead!", 400));
@@ -47,6 +47,7 @@ export const createLead = catchAsync(async (req, res, next) => {
     source,
     industry,
     budget,
+    amount,
     address,
     status: status || "Lead",
     priority: priority || "Medium",
@@ -153,7 +154,7 @@ export const updateLead = catchAsync(async (req, res, next) => {
     return next(new AppError("Lead not found!", 404));
   }
 
-  const { name, company, phone, email, source, industry, budget, address, priority, next_followup, notes, status } = req.body;
+  const { name, company, phone, email, source, industry, budget, amount, address, priority, next_followup, notes, status } = req.body;
 
   lead.name = name || lead.name;
   lead.company = company || lead.company;
@@ -162,6 +163,7 @@ export const updateLead = catchAsync(async (req, res, next) => {
   lead.source = source || lead.source;
   lead.industry = industry || lead.industry;
   lead.budget = budget || lead.budget;
+  if (amount !== undefined) lead.amount = amount;
   lead.address = address || lead.address;
   lead.priority = priority || lead.priority;
   lead.next_followup = next_followup !== undefined ? next_followup : lead.next_followup;

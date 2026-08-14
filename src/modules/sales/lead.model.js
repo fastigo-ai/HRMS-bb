@@ -33,6 +33,10 @@ const leadSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    amount: {
+      type: Number,
+      default: 0,
+    },
     address: {
       type: String,
       trim: true,
