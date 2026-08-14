@@ -9,9 +9,10 @@ import catchAsync from "../../utils/catchAsync.js";
 export const getLeads = catchAsync(async (req, res, next) => {
   // #swagger.tags = ['Sales']
   const query = {};
-  if (req.user.role !== "manager" && req.user.role !== "hr_admin") {
-    query.assignedTo = req.user.id;
-  }
+  // No longer restricting access by role so all employees can see all leads
+  // if (req.user.role !== "manager" && req.user.role !== "hr_admin") {
+  //   query.assignedTo = req.user.id;
+  // }
 
   const leads = await Lead.find(query)
     .populate("assignedTo", "name email position empId")
@@ -214,9 +215,10 @@ export const deleteLead = catchAsync(async (req, res, next) => {
 export const getActivities = catchAsync(async (req, res, next) => {
   // #swagger.tags = ['Sales']
   const query = {};
-  if (req.user.role !== "manager" && req.user.role !== "hr_admin") {
-    query.createdBy = req.user.id;
-  }
+  // No longer restricting access so all activities are visible
+  // if (req.user.role !== "manager" && req.user.role !== "hr_admin") {
+  //   query.createdBy = req.user.id;
+  // }
 
   const activities = await SalesActivity.find(query)
     .populate("createdBy", "name email position empId")
